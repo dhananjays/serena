@@ -40,6 +40,7 @@ class Language(str, Enum):
     GO = "go"
     RUBY = "ruby"
     DART = "dart"
+    D = "d"
     CPP = "cpp"
     PHP = "php"
     R = "r"
@@ -164,6 +165,8 @@ class Language(str, Enum):
                 return FilenameMatcher("*.kt", "*.kts")
             case self.DART:
                 return FilenameMatcher("*.dart")
+            case self.D:
+                return FilenameMatcher("*.d", "*.di")
             case self.PHP:
                 return FilenameMatcher("*.php")
             case self.R:
@@ -282,6 +285,10 @@ class Language(str, Enum):
                 from solidlsp.language_servers.dart_language_server import DartLanguageServer
 
                 return DartLanguageServer
+            case self.D:
+                from solidlsp.language_servers.serve_d_language_server import ServeD
+
+                return ServeD
             case self.CPP:
                 from solidlsp.language_servers.clangd_language_server import ClangdLanguageServer
 

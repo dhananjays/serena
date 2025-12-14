@@ -1,0 +1,10 @@
+{
+    "name": "test-repo",
+    "description": "Test D repository for serena testing",
+    "authors": ["Serena Test"],
+    "copyright": "Copyright © 2025, Serena",
+    "license": "MIT",
+    "targetType": "executable",
+    "sourcePaths": ["."],
+    "sourceFiles": ["main.d"]
+}
