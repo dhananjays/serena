@@ -89,7 +89,8 @@ class ServeD(SolidLanguageServer):
     def _setup_runtime_dependency() -> bool:
         """
         Check if required D runtime dependencies are available.
-        Raises RuntimeError with helpful message if dependencies are missing.
+        Raises RuntimeError if critical dependencies (D compiler, serve-d) are missing.
+        Logs warnings for optional dependencies (DUB, dfmt, dscanner).
         """
         # Check for D compiler (DMD, LDC, or GDC)
         dmd_version = ServeD._get_dmd_version()
@@ -117,17 +118,23 @@ class ServeD(SolidLanguageServer):
                 "or via your package manager and ensure it is added to your PATH."
             )
 
-        # Check for DUB (required by serve-d)
+        # Check for DUB (optional but recommended for package management)
         dub_version = ServeD._get_dub_version()
-        if not dub_version:
-            raise RuntimeError(
-                "DUB is not installed. DUB is required by serve-d for D package management.\n"
-                "Please install DUB from https://dub.pm/ or via your package manager."
-            )
 
         log.info(f"Found D compiler: {dmd_version or 'LDC/GDC'}")
         log.info(f"Found serve-d: {serve_d_version}")
-        log.info(f"Found DUB: {dub_version}")
+
+        if dub_version:
+            log.info(f"Found DUB: {dub_version}")
+        else:
+            log.warning(
+                "DUB not found. serve-d will work with reduced functionality:\n"
+                "  - External dependency resolution unavailable\n"
+                "  - Build configuration switching disabled\n"
+                "  - Multi-package workspace support limited\n"
+                "Core features (completion, diagnostics, formatting, linting) will still work.\n"
+                "For full functionality, install DUB from https://dub.pm/"
+            )
 
         # Check for optional tools
         try:
