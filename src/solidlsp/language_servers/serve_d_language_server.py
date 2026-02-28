@@ -288,6 +288,13 @@ class ServeD(SolidLanguageServer):
         def register_capability_handler(params: dict) -> None:
             return
 
+        def workspace_configuration_handler(params: dict) -> list[dict] | dict:
+            # serve-d requests workspace configuration after initialization.
+            # Return empty configuration for each requested item.
+            if "items" in params:
+                return [{}] * len(params["items"])
+            return {}
+
         def window_log_message(msg: dict) -> None:
             log.info(f"LSP: window/logMessage: {msg}")
 
@@ -295,6 +302,7 @@ class ServeD(SolidLanguageServer):
             return
 
         self.server.on_request("client/registerCapability", register_capability_handler)
+        self.server.on_request("workspace/configuration", workspace_configuration_handler)
         self.server.on_notification("window/logMessage", window_log_message)
         self.server.on_notification("$/progress", do_nothing)
         self.server.on_notification("textDocument/publishDiagnostics", do_nothing)
